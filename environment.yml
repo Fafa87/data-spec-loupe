@@ -1,0 +1,9 @@
+name: data-spec-loupe
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - napari=0.6.6
+  - pip
+  - pip:
+      - napari-feature-visualization
