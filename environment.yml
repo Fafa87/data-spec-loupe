@@ -4,6 +4,9 @@ channels:
 dependencies:
   - python=3.11
   - napari=0.6.6
+  - jupyterlab=4.5.1
   - pip
   - pip:
       - napari-feature-visualization
+      - fire
+      - pytest
