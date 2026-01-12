@@ -15,7 +15,7 @@ class Explorer:
             self.views.append(view)
         self.layers = []
         self.labels = None
-
+        self.dataframe = None
 
     def prepare_gui(self, viewer=None):
         viewer = viewer or napari.Viewer()
@@ -27,8 +27,20 @@ class Explorer:
                 self.labels = layer
 
         if self.labels is not None:
-            dataframe = pd.read_csv(self.data_path)
-            self.labels.features = dataframe
+            self.set_features(pd.read_csv(self.data_path))
 
+    def set_features(self, dataframe):
+        assert "label" in dataframe.columns
+        dataframe = dataframe.rename(columns={"label": "index"})  # for napari handling
+        self.dataframe = dataframe
+        self.labels.features = self.dataframe
 
+    def subset_data_columns(self, columns_list: list[str]):
+        assert self.labels is not None
 
+        if columns_list is None:
+            self.labels.features = self.dataframe
+        else:
+            if "index" not in columns_list:
+                columns_list.insert(0, "index")
+            self.labels.features = self.dataframe[columns_list]
