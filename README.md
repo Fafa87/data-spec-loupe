@@ -1,10 +1,17 @@
 # data-spec-loupe
-Easily and with little setup inspect you data specs that you see in your plots!
+
+<img width="300" height="300" alt="Image" src="https://github.com/user-attachments/assets/91697ea5-8b37-4cb1-9069-b246cb662217" />
+
+Easily and with little setup inspect you data specs that you see in your plots!!
 
 ## Installation
 
 We are using mamba to install dependencies and python environment:
-- freger
+- `git clone --recurse-submodules https://github.com/Fafa87/data-spec-loupe.git`
+- `cd data-spec-loupe`
+- `mamba env create -f environment.yml`
+- `mamba activate data-spec-loupe`
+- `pip install -e external/napari-feature-visualization`
 
 ## Usage
 

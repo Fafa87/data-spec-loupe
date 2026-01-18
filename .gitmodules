@@ -1,0 +1,3 @@
+[submodule "external/napari-feature-visualization"]
+	path = external/napari-feature-visualization
+	url = https://github.com/Fafa87/napari-feature-visualization.git

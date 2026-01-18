@@ -1,8 +1,11 @@
 from pathlib import Path
 
+import external
+
+external.add()
+
 import napari
 import pandas as pd
-from skimage.data import cells3d
 
 
 class Explorer:
