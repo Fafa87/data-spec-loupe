@@ -24,6 +24,11 @@ For example to show image from `example_data/views` corresponding to data from `
 python -m dataspecloupe.cli.gui example_data/views example_data/data_tracked.tsv 
 ```
 
+Optionally additional config yaml file can be specified:
+```
+python -m dataspecloupe.cli.gui example_data/views example_data/data_tracked.tsv --config_path example_data/data_config.yaml
+```
+
 Alternative it to run viewer along with the jupyter notebook analysis which allows for easier communication between analysis and viewer.
 See [exploring.ipynb](notebooks/exploring.ipynb) for example processing.
 
@@ -33,6 +38,9 @@ It is the main class used to set up and control the napari viewer.
 
 Main features:
 - specify subset of features to load and present
+- specify features treated as categorical (for visualisation)
+- selecting the list of labels (by setting extra SELECTED feature column)
+- option to move viewer to the selected view
 
 
 ### Images data format (tif folders)
@@ -57,8 +65,10 @@ There are only a few constrains and required fields - the rest is treated as a f
 
 ### Data specification yaml (optional)
 
-TODO - this allows to specify types of data columns (categorical / continuous)
-
+Yaml config file example:
+```yaml
+category_features: [label, track_label, trench, trench_lineage, lineage_cellid, parent_lineage_cellid, cell_generation]
+```
 
 ## Example
 
@@ -79,7 +89,6 @@ There is a full usage example prepared for exploring the numerical data calculat
 ## Roadmap
 
 Currently, we can show the data and using visualisation plugin show features as colours.
-- however it is still missing ability to visualise category information using a nicely separate colourmap
 
 There are two more basic direction of information flow that are missing at the moment:
 - selected data frame rows -> showing those objects in viewer:

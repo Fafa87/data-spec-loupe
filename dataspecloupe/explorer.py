@@ -1,8 +1,12 @@
 from pathlib import Path
 
+import yaml
+
 import external
 
 external.add()
+
+import napari_feature_visualization
 
 import napari
 import pandas as pd
@@ -19,6 +23,8 @@ class Explorer:
         self.layers = []
         self.labels = None
         self.dataframe = None
+        self.config_path = None
+        self.config = None
 
     def prepare_gui(self, viewer=None):
         viewer = viewer or napari.Viewer()
@@ -31,6 +37,21 @@ class Explorer:
 
         if self.labels is not None:
             self.set_features(pd.read_csv(self.data_path))
+
+        if self.category_features:
+            napari_feature_visualization.add_category_features(self.category_features)
+
+    @property
+    def category_features(self):
+        if self.config is None:
+            return []
+        return self.config["category_features"]
+
+    def set_config(self, config_path):
+        self.config_path = Path(config_path)
+        # load config yaml file
+        with open(config_path, "r") as f:
+            self.config = yaml.load(f, Loader=yaml.FullLoader)
 
     def set_features(self, dataframe):
         assert "label" in dataframe.columns
