@@ -24,6 +24,9 @@ For example to show image from `example_data/views` corresponding to data from `
 python -m dataspecloupe.cli.gui example_data/views example_data/data_tracked.tsv 
 ```
 
+Alternative it to run viewer along with the jupyter notebook analysis which allows for easier communication between analysis and viewer.
+See [exploring.ipynb](notebooks/exploring.ipynb) for example processing.
+
 ### Explorer class 
 
 It is the main class used to set up and control the napari viewer.  
@@ -75,5 +78,17 @@ There is a full usage example prepared for exploring the numerical data calculat
 
 ## Roadmap
 
-One thing to add would be to have an option to specify which features to show as points in napari. They will be placed
+Currently, we can show the data and using visualisation plugin show features as colours.
+- however it is still missing ability to visualise category information using a nicely separate colourmap
+
+There are two more basic direction of information flow that are missing at the moment:
+- selected data frame rows -> showing those objects in viewer:
+  - navigate to the view (views?)
+  - highlight the visible selected objects 
+- selecting object in the viewer -> selecting data frame rows
+  - adding points layer where point are added on those selected objects
+  - exporting the labels where the points as list
+  - getting data frame rows from labels
+
+Another thing would be to have an option to specify which features to show as points in napari. They will be placed
 at the mean position of the selected feature.

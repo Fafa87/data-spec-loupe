@@ -7,6 +7,7 @@ dependencies:
   - matplotlib=3.10
   - pyqt=5.15
   - jupyterlab=4.5.1
+  - pandas=2.3.3
   - pip
   - pip:
       - fire
