@@ -29,8 +29,8 @@ Optionally additional config yaml file can be specified:
 python -m dataspecloupe.cli.gui example_data/views example_data/data_tracked.tsv --config_path example_data/data_config.yaml
 ```
 
-Alternative it to run viewer along with the jupyter notebook analysis which allows for easier communication between analysis and viewer.
-See [exploring.ipynb](notebooks/exploring.ipynb) for example processing.
+The best way is it to run viewer along with the jupyter notebook analysis which allows for easier communication between analysis and viewer.
+See [exploring.ipynb](notebooks/exploring.ipynb) for example processing and feature list.
 
 ### Explorer class 
 
@@ -39,7 +39,10 @@ It is the main class used to set up and control the napari viewer.
 Main features:
 - specify subset of features to load and present
 - specify features treated as categorical (for visualisation)
-- selecting the list of labels (by setting extra SELECTED feature column)
+- specify new dataframe as features 
+- showing selected dataframe rows in viewer:
+  - navigate to the first view
+  - highlight the visible selected objects using extra SELECTED feature
 - option to move viewer to the selected view
 
 
@@ -88,12 +91,11 @@ There is a full usage example prepared for exploring the numerical data calculat
 
 ## Roadmap
 
-Currently, we can show the data and using visualisation plugin show features as colours.
+Currently, we can show the data and using visualisation plugin show features as colours. 
+We can also show the data selected in analysis in viewer.
 
-There are two more basic direction of information flow that are missing at the moment:
-- selected data frame rows -> showing those objects in viewer:
-  - navigate to the view (views?)
-  - highlight the visible selected objects 
+There is one more basic direction of information flow that are missing at the moment:
+
 - selecting object in the viewer -> selecting data frame rows
   - adding points layer where point are added on those selected objects
   - exporting the labels where the points as list
@@ -101,3 +103,5 @@ There are two more basic direction of information flow that are missing at the m
 
 Another thing would be to have an option to specify which features to show as points in napari. They will be placed
 at the mean position of the selected feature.
+
+Also, it would be good to add proper installation instructions so that it is available in the python env everywhere.
