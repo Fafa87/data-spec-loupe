@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 from typing import Optional
 
@@ -27,11 +28,25 @@ class Explorer:
         self.config_path = None
         self.config = None
         self.viewer: Optional[napari.Viewer] = None
+        self.view_to_number = None
+
+        if self.views:
+            self.view_to_number = self.determine_views_mapping(self.views[0])
+
+    def determine_views_mapping(self, folder):
+        all_files = [p.stem for p in Path(folder).iterdir()]
+        pattern = re.compile(r'view_(\d+)')
+        view_num = lambda filename: int(pattern.search(filename).group(1))
+
+        res = {}
+        for i, f in enumerate(sorted(all_files, key=view_num)):
+            res[view_num(f)] = i
+
+        return res
 
     def prepare_gui(self, viewer=None):
         self.viewer = viewer or napari.Viewer()
 
-        # TODO make sure that mapping between images and view is stored and used for views with gaps
         for view in self.views:
             layer = self.viewer.open(view)[0]
             self.layers.append(layer)
@@ -82,7 +97,7 @@ class Explorer:
 
     def set_view(self, view_number: int):
         new_step = list(self.viewer.dims.current_step)
-        new_step[0] = view_number
+        new_step[0] = self.view_to_number[view_number]
         self.viewer.dims.current_step = tuple(new_step)
 
     def set_selected_objects(self, selected_rows, selected_value=1):
@@ -92,11 +107,11 @@ class Explorer:
         if "SELECTED" not in dataframe.columns:
             dataframe["SELECTED"] = 0
         else:
-            dataframe[dataframe["SELECTED"]==selected_value] = 0
+            dataframe[dataframe["SELECTED"] == selected_value] = 0
 
         if len(selected_rows) > 0:
             selected_rows = self._adapt_data_frame(selected_rows)
-            dataframe.loc[dataframe["index"].isin(selected_rows["index"]),"SELECTED"] = selected_value
+            dataframe.loc[dataframe["index"].isin(selected_rows["index"]), "SELECTED"] = selected_value
 
             if "view" in selected_rows.columns:
                 views = list(selected_rows["view"])

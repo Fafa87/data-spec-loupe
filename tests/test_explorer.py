@@ -29,3 +29,12 @@ def test_category_columns():
 
     assert "track_label" in explorer.category_features
     assert "bbox_min_x" not in explorer.category_features
+
+
+def test_view_to_number_mapping():
+    explorer = Explorer(NANO_ROOT / "views_nano", data_path=NANO_ROOT / "data_nano.tsv")
+    assert explorer.view_to_number is not None
+    assert len(explorer.view_to_number) == 4
+    assert explorer.view_to_number[0] == 0
+    assert explorer.view_to_number[13] == 1
+    assert explorer.view_to_number[203] == 3
