@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Optional
 
 import yaml
+from magicgui import magicgui
 
 import external
 
@@ -30,6 +31,10 @@ class Explorer:
         self.viewer: Optional[napari.Viewer] = None
         self.view_to_number = None
 
+        self.selection_dock = None
+        self.selection_control = None
+        self.selection_subset = []
+
         if self.views:
             self.view_to_number = self.determine_views_mapping(self.views[0])
 
@@ -46,6 +51,20 @@ class Explorer:
 
     def prepare_gui(self, viewer=None):
         self.viewer = viewer or napari.Viewer()
+        @magicgui(
+            selected_idx={"widget_type": "Slider", "label": "View subset", "min": 0, "max": 0, "step": 1},
+            auto_call=True
+        )
+        def view_subset_selection(selected_idx: int):
+            if len(self.selection_subset) > selected_idx:
+                selected_view_number = self.selection_subset[selected_idx]
+                self.set_view(selected_view_number)
+
+        self.selection_control = view_subset_selection
+        self.selection_dock = self.viewer.window.add_dock_widget(view_subset_selection,
+                                                                 area='bottom',
+                                                                 name='View subset slider')
+        self.update_subset_sliders()
 
         for view in self.views:
             layer = self.viewer.open(view)[0]
@@ -58,6 +77,15 @@ class Explorer:
 
         if self.category_features:
             napari_feature_visualization.add_category_features(self.category_features)
+
+    def update_subset_sliders(self):
+        if self.selection_subset:
+            self.selection_control.selected_idx.max = len(self.selection_subset) - 1
+            self.selection_control.selected_idx.value = 0
+            self.selection_control.changed.emit()
+            self.selection_dock.show()
+        else:
+            self.selection_dock.hide()
 
     def _adapt_data_frame(self, dataframe):
         assert "label" in dataframe.columns
@@ -100,6 +128,15 @@ class Explorer:
         new_step[0] = self.view_to_number[view_number]
         self.viewer.dims.current_step = tuple(new_step)
 
+    def set_view_subset(self, view_numbers: list[int]):
+        if len(view_numbers) <= 1:
+            self.selection_subset = []
+            self.update_subset_sliders()
+        else:
+            self.selection_subset = list(view_numbers)
+            self.update_subset_sliders()
+            self.set_view(view_numbers[0])
+
     def set_selected_objects(self, selected_rows, selected_value=1):
         assert self.labels is not None
 
@@ -114,5 +151,5 @@ class Explorer:
             dataframe.loc[dataframe["index"].isin(selected_rows["index"]), "SELECTED"] = selected_value
 
             if "view" in selected_rows.columns:
-                views = list(selected_rows["view"])
-                self.set_view(views[0])
+                views = list(set(selected_rows["view"]))
+                self.set_view_subset(views)
